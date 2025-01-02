@@ -1,0 +1,27 @@
+{
+  "name": "webchatbackend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts --watch --env-file .env",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "ivanglzr",
+  "license": "ISC",
+  "type": "module",
+  "description": "Web chat backend",
+  "dependencies": {
+    "express": "4.21.2",
+    "morgan": "1.10.0",
+    "socket.io": "4.8.1"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.0",
+    "@types/morgan": "1.9.9",
+    "@types/node": "22.10.3",
+    "tsx": "4.19.2",
+    "typescript": "5.7.2"
+  }
+}
