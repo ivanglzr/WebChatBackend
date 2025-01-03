@@ -1,13 +1,11 @@
-import { jwtVerify, SignJWT, generateSecret, KeyLike } from "jose";
-
-const secretKey = await generateSecret("HS256");
+import { jwtVerify, SignJWT } from "jose";
 
 export class TokenService {
-  constructor(private secret: KeyLike | Uint8Array<ArrayBufferLike>) {}
+  private static secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
   public async verify(token: string): Promise<boolean> {
     try {
-      await jwtVerify(token, this.secret);
+      await jwtVerify(token, TokenService.secret);
 
       return true;
     } catch {
@@ -22,8 +20,8 @@ export class TokenService {
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setIssuer("auth")
-      .sign(this.secret);
+      .sign(TokenService.secret);
   }
 }
 
-export const tokenService = new TokenService(secretKey);
+export const tokenService = new TokenService();
