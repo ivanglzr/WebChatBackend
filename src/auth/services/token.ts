@@ -3,11 +3,11 @@ import { jwtVerify, SignJWT } from "jose";
 export class TokenService {
   private static secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-  public async verify(token: string): Promise<boolean> {
+  public async verify(token: string) {
     try {
-      await jwtVerify(token, TokenService.secret);
+      const data = await jwtVerify(token, TokenService.secret);
 
-      return true;
+      return data.payload;
     } catch {
       return false;
     }
