@@ -35,7 +35,7 @@ export class AuthController {
     if (error) {
       res.status(422).json({
         statusCode: 422,
-        message: "Log in data wasn't valid",
+        message: error.errors[0].message,
       });
 
       return;
@@ -90,7 +90,7 @@ export class AuthController {
     if (error) {
       res.status(422).json({
         statusCode: 422,
-        message: "Register data wasn't valid",
+        message: error.errors[0].message,
       });
 
       return;
