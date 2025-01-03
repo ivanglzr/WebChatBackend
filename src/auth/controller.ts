@@ -1,3 +1,5 @@
+import prisma from "@/prisma";
+
 import { PrismaClient } from "@prisma/client";
 
 import { passwordService } from "./services/password";
@@ -9,11 +11,7 @@ import type { Request, Response } from "express";
 import { authCookieName, cookieOptions } from "./config";
 
 export class AuthController {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+  constructor(private prisma: PrismaClient) {}
 
   private async userExists(email: string) {
     try {
@@ -137,4 +135,4 @@ export class AuthController {
   };
 }
 
-export const authController = new AuthController();
+export const authController = new AuthController(prisma);
