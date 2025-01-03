@@ -18,7 +18,7 @@ CREATE TABLE users (
 )
 
 CREATE TABLE codes (
-    userId UUID REFERENCES users (id) ON DELETE CASCADE,
+    userId UUID PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE,
     code INT
 )
 
