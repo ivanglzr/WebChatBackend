@@ -1,8 +1,8 @@
-import "fastify";
-import { Server as SocketIOServer } from "socket.io";
+import "express";
+import { UUID } from "crypto";
 
-declare module "fastify" {
-  interface FastifyInstance {
-    io: SocketIOServer;
+declare module "express" {
+  interface Request {
+    session: { id: UUID };
   }
 }
