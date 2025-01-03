@@ -19,8 +19,6 @@ export class AuthController {
         where: { email },
       });
 
-      console.log(user);
-
       return !user ? false : true;
     } catch (error) {
       console.error(error);
