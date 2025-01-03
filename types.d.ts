@@ -1,7 +1,6 @@
-import "express";
-import { UUID } from "crypto";
+import { Request } from "express";
 
-declare module "express" {
+declare module "express-serve-static-core" {
   interface Request {
     session: { id: UUID };
   }
