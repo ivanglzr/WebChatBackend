@@ -3,6 +3,7 @@ import { Router } from "express";
 import { authController } from "./controller";
 
 export enum AUTH_ROUTES {
+  PREFIX = "/auth",
   LOG_IN = "/log-in",
   REGISTER = "/register",
 }
