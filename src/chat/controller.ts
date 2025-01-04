@@ -9,6 +9,38 @@ import type { Request, Response } from "express";
 export class ChatController {
   constructor(private prisma: PrismaClient) {}
 
+  public getUserChats = async (req: Request, res: Response) => {
+    const { id } = req.session;
+
+    try {
+      const chats = await this.prisma.chats.findMany({
+        where: { ownerId: id },
+      });
+
+      const message =
+        chats.length === 0
+          ? "No chats found"
+          : `Chat${chats.length > 1 && "s"} fetched successfully`;
+
+      res.status(200).json({
+        statusCode: 200,
+        message,
+        chats,
+      });
+
+      return;
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error ocurred while fetching the chats",
+      });
+
+      return;
+    }
+  };
+
   public createChat = async (req: Request, res: Response) => {
     const { data, error } = chatValidationService.validateChatData(req.body);
 
@@ -21,9 +53,13 @@ export class ChatController {
       return;
     }
 
+    const { id } = req.session;
+
+    if (!data.usersIds.includes(id)) data.usersIds.push(id);
+
     try {
       await this.prisma.chats.create({
-        data,
+        data: { ...data, ownerId: id },
       });
 
       res.status(201).json({
