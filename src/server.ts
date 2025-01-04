@@ -25,4 +25,11 @@ app.use(authenticateUser);
 
 app.use(USER_ROUTES.PREFIX, userRouter);
 
+app.all("*", (req, res) => {
+  res.status(404).json({
+    statusCode: 404,
+    message: "Page not found",
+  });
+});
+
 export default server;
