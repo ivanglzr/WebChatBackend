@@ -16,7 +16,11 @@ const usersIdsSchema = z
       })
       .uuid("A user id must be a valid uuid")
   )
-  .nonempty("A chat must have at least 1 member");
+  .transform((ids) => {
+    const idsSet = new Set(ids);
+
+    return Array.from(idsSet);
+  });
 
 export const chatSchema = z.object({
   chatName: chatNameSchema,
