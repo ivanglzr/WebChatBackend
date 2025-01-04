@@ -181,6 +181,45 @@ export class ChatController {
       return;
     }
   };
+
+  public deleteChat = async (req: Request, res: Response) => {
+    const { chatId } = req.params;
+    const { id } = req.session;
+
+    try {
+      const chat = await this.prisma.chats.deleteMany({
+        where: {
+          id: chatId,
+          ownerId: id,
+        },
+      });
+
+      if (chat.count === 0) {
+        res.status(404).json({
+          statusCode: 404,
+          message: "Chat not found",
+        });
+
+        return;
+      }
+
+      res.status(200).json({
+        statusCode: 200,
+        message: "Chat deleted successfully",
+      });
+
+      return;
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error ocurred while deleting the chat",
+      });
+
+      return;
+    }
+  };
 }
 
 export const chatController = new ChatController(prisma);

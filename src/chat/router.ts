@@ -17,4 +17,6 @@ chatRouter.post("/", chatController.createChat);
 
 chatRouter.put("/:chatId", validateId("chatId"), chatController.editChat);
 
+chatRouter.delete("/:chatId", validateId("chatId"), chatController.deleteChat);
+
 export default chatRouter;
