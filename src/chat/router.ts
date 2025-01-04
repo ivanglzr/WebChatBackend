@@ -8,6 +8,8 @@ export enum CHAT_ROUTES {
 
 const chatRouter = Router();
 
+chatRouter.get("/", chatController.getUserChats);
+
 chatRouter.post("/", chatController.createChat);
 
 export default chatRouter;
