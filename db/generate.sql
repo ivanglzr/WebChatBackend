@@ -25,6 +25,7 @@ CREATE TABLE codes (
 CREATE TABLE chats (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   chatName VARCHAR(100) NOT NULL,
+  ownerId UUID REFERENCES users(id),
   usersIds UUID[]
 )
 
