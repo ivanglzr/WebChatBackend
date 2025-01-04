@@ -2,6 +2,8 @@ import { Router } from "express";
 
 import { chatController } from "./controller";
 
+import validateId from "@/common/middlewares/validateId";
+
 export enum CHAT_ROUTES {
   PREFIX = "/chat",
 }
@@ -9,6 +11,7 @@ export enum CHAT_ROUTES {
 const chatRouter = Router();
 
 chatRouter.get("/", chatController.getUserChats);
+chatRouter.get("/:chatId", validateId("chatId"), chatController.getChatById);
 
 chatRouter.post("/", chatController.createChat);
 
