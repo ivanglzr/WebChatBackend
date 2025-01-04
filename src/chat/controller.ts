@@ -119,6 +119,68 @@ export class ChatController {
       return;
     }
   };
+
+  public editChat = async (req: Request, res: Response) => {
+    const { chatId } = req.params;
+    const { id } = req.session;
+
+    const { data, error } = chatValidationService.validatePartialChatData(
+      req.body
+    );
+
+    if (error) {
+      res.status(422).json({
+        statusCode: 422,
+        message: error.errors[0].message,
+      });
+
+      return;
+    }
+
+    if (Object.keys(data).length === 0) {
+      res.status(200).json({
+        statusCode: 200,
+        message: "Chat updated successfully",
+      });
+
+      return;
+    }
+
+    try {
+      const chat = await this.prisma.chats.updateMany({
+        where: {
+          id: chatId,
+          ownerId: id,
+        },
+        data,
+      });
+
+      if (chat.count === 0) {
+        res.status(404).json({
+          statusCode: 404,
+          message: "Chat not found",
+        });
+
+        return;
+      }
+
+      res.status(200).json({
+        statusCode: 200,
+        message: "Chat updated successfully",
+      });
+
+      return;
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error ocurred while updating the chat",
+      });
+
+      return;
+    }
+  };
 }
 
 export const chatController = new ChatController(prisma);
