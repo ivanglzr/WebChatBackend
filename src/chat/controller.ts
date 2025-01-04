@@ -41,6 +41,46 @@ export class ChatController {
     }
   };
 
+  public getChatById = async (req: Request, res: Response) => {
+    const { chatId } = req.params;
+    const { id } = req.session;
+
+    try {
+      const chat = await this.prisma.chats.findUnique({
+        where: {
+          ownerId: id,
+          id: chatId,
+        },
+      });
+
+      if (!chat) {
+        res.status(404).json({
+          statusCode: 404,
+          message: "Chat not found",
+        });
+
+        return;
+      }
+
+      res.status(200).json({
+        statusCode: 200,
+        message: "Chat fetched successfully",
+        chat,
+      });
+
+      return;
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error ocurred while fetching the chat",
+      });
+
+      return;
+    }
+  };
+
   public createChat = async (req: Request, res: Response) => {
     const { data, error } = chatValidationService.validateChatData(req.body);
 
