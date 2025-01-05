@@ -1,5 +1,8 @@
+import morgan from "morgan";
+
 import express from "express";
 import { createServer } from "node:http";
+import { Server } from "socket.io";
 
 import cookieParser from "cookie-parser";
 
@@ -7,10 +10,12 @@ import authRouter, { AUTH_ROUTES } from "./auth/router";
 import userRouter, { USER_ROUTES } from "./user/router";
 
 import authenticateUser from "./auth/middlewares/authenticate-user";
-import morgan from "morgan";
+
+import handleSocket from "./io";
 
 const app = express();
 const server = createServer(app);
+const io = new Server(server);
 
 app.disable("x-powered-by");
 
@@ -31,5 +36,7 @@ app.all("*", (req, res) => {
     message: "Page not found",
   });
 });
+
+handleSocket(io);
 
 export default server;
