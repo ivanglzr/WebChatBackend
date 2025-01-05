@@ -11,7 +11,7 @@ import userRouter, { USER_ROUTES } from "./user/router";
 
 import authenticateUser from "./auth/middlewares/authenticate-user";
 
-import handleSocket from "./io";
+import { handleSocket } from "./io";
 
 const app = express();
 const server = createServer(app);
