@@ -5,6 +5,8 @@ import { tokenService } from "./auth/services";
 import type { Server } from "socket.io";
 import { UUID } from "crypto";
 
+import { IO_EVENTS } from "./config";
+
 export class Io {
   public static io: Server;
 }
@@ -35,15 +37,19 @@ export function handleSocket(io: Server) {
   Io.io.on("connection", async (socket) => {
     const id = socket.handshake.auth.id as UUID;
 
-    socket.join(`User ${id}`);
+    socket.join(IO_EVENTS.USER_ROOM(id));
 
     const chats = await prisma.chats.findMany({
       where: { usersIds: { has: id } },
     });
 
     chats.map((chat) => {
-      socket.join(`Chat ${chat.id}`);
+      socket.join(IO_EVENTS.CHAT_ROOM(chat.id));
     });
+
+    socket.on(IO_EVENTS.CHAT_CREATED, (chatId) =>
+      socket.join(IO_EVENTS.CHAT_ROOM(chatId))
+    );
 
     socket.on("disconnect", () => console.log("user disconnected"));
   });
