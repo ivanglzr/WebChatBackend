@@ -4,7 +4,11 @@ import { PrismaClient } from "@prisma/client";
 
 import { chatValidationService } from "./services/validation";
 
+import { Io } from "@/io";
+
 import type { Request, Response } from "express";
+
+import { IO_EVENTS } from "@/config";
 
 export class ChatController {
   constructor(private prisma: PrismaClient) {}
@@ -98,9 +102,15 @@ export class ChatController {
     if (!data.usersIds.includes(id)) data.usersIds.push(id);
 
     try {
-      await this.prisma.chats.create({
+      const chat = await this.prisma.chats.create({
         data: { ...data, ownerId: id },
       });
+
+      chat.usersIds.map((userId) =>
+        Io.io
+          .to(IO_EVENTS.USER_ROOM(userId))
+          .emit(IO_EVENTS.CHAT_CREATED, chat.id)
+      );
 
       res.status(201).json({
         statusCode: 201,
