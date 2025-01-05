@@ -28,6 +28,8 @@ export function handleSocket(io: Server) {
     }
 
     socket.handshake.auth.id = payload.id;
+
+    next();
   });
 
   Io.io.on("connection", async (socket) => {
