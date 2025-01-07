@@ -4,11 +4,9 @@ import { PrismaClient } from "@prisma/client";
 
 import { chatValidationService } from "./services/validation";
 
-import { Io } from "@/io";
-
 import type { Request, Response } from "express";
 
-import { IO_EVENTS } from "@/config";
+import { EVENTS } from "@/config";
 
 export class ChatController {
   constructor(private prisma: PrismaClient) {}
@@ -106,12 +104,6 @@ export class ChatController {
         data: { ...data, ownerId: id },
       });
 
-      chat.usersIds.map((userId) =>
-        Io.io
-          .to(IO_EVENTS.USER_ROOM(userId))
-          .emit(IO_EVENTS.CHAT_CREATED, chat.id)
-      );
-
       res.status(201).json({
         statusCode: 201,
         message: "Chat created successfully",
@@ -197,14 +189,14 @@ export class ChatController {
     const { id } = req.session;
 
     try {
-      const chat = await this.prisma.chats.deleteMany({
+      const chat = await this.prisma.chats.findFirst({
         where: {
           id: chatId,
           ownerId: id,
         },
       });
 
-      if (chat.count === 0) {
+      if (!chat) {
         res.status(404).json({
           statusCode: 404,
           message: "Chat not found",
@@ -212,6 +204,8 @@ export class ChatController {
 
         return;
       }
+
+      await this.prisma.chats.delete({ where: { id: chatId, ownerId: id } });
 
       res.status(200).json({
         statusCode: 200,

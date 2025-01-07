@@ -24,6 +24,8 @@ app.use(cookieParser());
 
 app.use(morgan("dev"));
 
+app.get("/", (_, res) => res.sendFile(process.cwd() + "/index.html"));
+
 app.use(AUTH_ROUTES.PREFIX, authRouter);
 
 app.use(authenticateUser);
