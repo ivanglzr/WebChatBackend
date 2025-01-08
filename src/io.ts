@@ -44,15 +44,5 @@ export function handleSocket(io: Server) {
     socket.on(EVENTS.CHAT_DELETED, (chatId) => {
       socket.leave(EVENTS.CHAT_ROOM(chatId));
     });
-
-    socket.on("test", (id) => {
-      console.log(id);
-    });
-
-    socket.on("message", (msg) => {
-      io.emit("message", msg);
-    });
-
-    socket.on("disconnect", () => console.log("user disconnected"));
   });
 }
