@@ -6,8 +6,6 @@ import { chatValidationService } from "./services/validation";
 
 import type { Request, Response } from "express";
 
-import { EVENTS } from "@/config";
-
 export class ChatController {
   constructor(private prisma: PrismaClient) {}
 
@@ -100,7 +98,7 @@ export class ChatController {
     if (!data.usersIds.includes(id)) data.usersIds.push(id);
 
     try {
-      const chat = await this.prisma.chats.create({
+      await this.prisma.chats.create({
         data: { ...data, ownerId: id },
       });
 

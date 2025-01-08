@@ -2,8 +2,6 @@ import prisma from "./prisma";
 
 import { tokenService } from "./auth/services";
 
-import { chatEvents } from "./events";
-
 import type { Server } from "socket.io";
 import { UUID } from "crypto";
 
