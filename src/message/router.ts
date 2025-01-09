@@ -12,4 +12,6 @@ messageRouter.get(
   messageController.getMessage
 );
 
+messageRouter.post("/", messageController.postMessage);
+
 export default messageRouter;
