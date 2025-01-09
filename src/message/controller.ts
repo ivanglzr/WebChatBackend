@@ -1,6 +1,8 @@
 import prisma from "@/prisma";
 import { PrismaClient } from "@prisma/client";
 
+import { messageValidationService } from "./services/validation";
+
 import type { Request, Response } from "express";
 
 export class MessageController {
@@ -51,6 +53,7 @@ export class MessageController {
       res.status(200).json({
         statusCode: 200,
         message,
+        messages,
       });
 
       return;
@@ -108,7 +111,7 @@ export class MessageController {
 
       res.status(200).json({
         statusCode: 200,
-        message: "Message found",
+        message,
       });
 
       return;
@@ -121,6 +124,46 @@ export class MessageController {
       });
 
       return;
+    }
+  };
+
+  public postMessage = async (req: Request, res: Response) => {
+    const { data, error } = messageValidationService.validateMessageData(
+      req.body
+    );
+
+    if (error) {
+      res.status(422).json({
+        statusCode: 422,
+        message: error.errors[0].message,
+      });
+
+      return;
+    }
+
+    const { id } = req.session;
+    const { chatId } = req.params;
+
+    try {
+      await this.prisma.messages.create({
+        data: {
+          content: data.content,
+          chatId,
+          userId: id,
+        },
+      });
+
+      res.status(200).json({
+        statusCode: 200,
+        message: "Message created successfully",
+      });
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error ocurred while creating the message",
+      });
     }
   };
 }
