@@ -25,7 +25,7 @@ export class ChatController {
       res.status(200).json({
         statusCode: 200,
         message,
-        chats,
+        data: chats,
       });
 
       return;
@@ -65,7 +65,7 @@ export class ChatController {
       res.status(200).json({
         statusCode: 200,
         message: "Chat fetched successfully",
-        chat,
+        data: chat,
       });
 
       return;

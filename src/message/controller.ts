@@ -53,7 +53,7 @@ export class MessageController {
       res.status(200).json({
         statusCode: 200,
         message,
-        messages,
+        data: messages,
       });
 
       return;
@@ -111,7 +111,8 @@ export class MessageController {
 
       res.status(200).json({
         statusCode: 200,
-        message,
+        message: "Message found successfully",
+        data: message,
       });
 
       return;
