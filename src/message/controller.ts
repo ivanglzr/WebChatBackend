@@ -167,6 +167,103 @@ export class MessageController {
       });
     }
   };
+
+  public putMessage = async (req: Request, res: Response) => {
+    const { data, error } = messageValidationService.validateMessageData(
+      req.body
+    );
+
+    if (error) {
+      res.status(422).json({
+        statusCode: 422,
+        message: "Message is not valid",
+      });
+
+      return;
+    }
+
+    const { id } = req.session;
+    const { chatId, messageId } = req.params;
+
+    const filter = {
+      id: messageId,
+      chatId,
+      userId: id,
+    };
+
+    try {
+      const message = await this.prisma.messages.findFirst({
+        where: filter,
+      });
+
+      if (!message) {
+        res.status(404).json({
+          statusCode: 404,
+          message: "Message not found",
+        });
+
+        return;
+      }
+
+      await this.prisma.messages.update({ where: filter, data });
+
+      res.status(200).json({
+        statusCode: 200,
+        message: "Message edited successfully",
+      });
+
+      return;
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error ocurred while editing the message",
+      });
+
+      return;
+    }
+  };
+
+  public deleteMessage = async (req: Request, res: Response) => {
+    const { id } = req.session;
+    const { chatId, messageId } = req.params;
+
+    const filter = {
+      id: messageId,
+      chatId,
+      userId: id,
+    };
+
+    try {
+      const message = await this.prisma.messages.findFirst({ where: filter });
+
+      if (!message) {
+        res.status(404).json({
+          statusCode: 404,
+          message: "Message not found",
+        });
+
+        return;
+      }
+
+      await this.prisma.messages.delete({ where: filter });
+
+      res.status(200).json({
+        statusCode: 200,
+        message: "Message deleted successfully",
+      });
+
+      return;
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error ocurred while deleting the message",
+      });
+    }
+  };
 }
 
 export const messageController = new MessageController(prisma);
