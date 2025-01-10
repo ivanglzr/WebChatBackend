@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts --env-file .env",
+    "dev": "tsx watch --env-file .env src/index.ts",
     "build": "tsc -p tsconfig.json && tsc-alias",
     "start": "node dist/index.js"
   },
