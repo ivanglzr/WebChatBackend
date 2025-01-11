@@ -12,9 +12,10 @@
   "license": "ISC",
   "description": "Web chat backend",
   "dependencies": {
-    "@prisma/client": "6.1.0",
+    "@prisma/client": "6.2.1",
     "argon2": "0.41.1",
     "cookie-parser": "1.4.7",
+    "cors": "2.8.5",
     "express": "4.21.2",
     "jose": "5.9.6",
     "morgan": "1.10.0",
@@ -26,7 +27,7 @@
     "@types/express": "5.0.0",
     "@types/morgan": "1.9.9",
     "@types/node": "22.10.3",
-    "prisma": "6.1.0",
+    "prisma": "6.2.1",
     "tsc-alias": "1.8.10",
     "tsx": "4.19.2",
     "typescript": "5.7.2"
