@@ -13,7 +13,7 @@ export class ChatController {
     const { id } = req.session;
 
     try {
-      const chats = await this.prisma.chats.findMany({
+      const chats = await this.prisma.chat.findMany({
         where: { ownerId: id },
       });
 
@@ -46,7 +46,7 @@ export class ChatController {
     const { id } = req.session;
 
     try {
-      const chat = await this.prisma.chats.findUnique({
+      const chat = await this.prisma.chat.findUnique({
         where: {
           ownerId: id,
           id: chatId,
@@ -98,7 +98,7 @@ export class ChatController {
     if (!data.usersIds.includes(id)) data.usersIds.push(id);
 
     try {
-      await this.prisma.chats.create({
+      await this.prisma.chat.create({
         data: { ...data, ownerId: id },
       });
 
@@ -147,7 +147,7 @@ export class ChatController {
     }
 
     try {
-      const chat = await this.prisma.chats.updateMany({
+      const chat = await this.prisma.chat.updateMany({
         where: {
           id: chatId,
           ownerId: id,
@@ -187,7 +187,7 @@ export class ChatController {
     const { id } = req.session;
 
     try {
-      const chat = await this.prisma.chats.findFirst({
+      const chat = await this.prisma.chat.findFirst({
         where: {
           id: chatId,
           ownerId: id,
@@ -203,7 +203,7 @@ export class ChatController {
         return;
       }
 
-      await this.prisma.chats.delete({ where: { id: chatId, ownerId: id } });
+      await this.prisma.chat.delete({ where: { id: chatId, ownerId: id } });
 
       res.status(200).json({
         statusCode: 200,

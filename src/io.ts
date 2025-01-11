@@ -31,7 +31,7 @@ export function handleSocket(io: Server) {
   io.on("connection", async (socket) => {
     const id = socket.handshake.auth.id as UUID;
 
-    const chats = await prisma.chats.findMany({
+    const chats = await prisma.chat.findMany({
       where: { usersIds: { has: id } },
     });
 

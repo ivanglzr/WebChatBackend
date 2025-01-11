@@ -13,7 +13,7 @@ export class MessageController {
     const { chatId } = req.params;
 
     try {
-      const chat = await this.prisma.chats.findUnique({
+      const chat = await this.prisma.chat.findUnique({
         where: { id: chatId },
       });
 
@@ -35,7 +35,7 @@ export class MessageController {
         return;
       }
 
-      const messages = await this.prisma.messages.findMany({
+      const messages = await this.prisma.message.findMany({
         where: { chatId },
       });
 
@@ -74,7 +74,7 @@ export class MessageController {
     const { chatId, messageId } = req.params;
 
     try {
-      const chat = await this.prisma.chats.findUnique({
+      const chat = await this.prisma.chat.findUnique({
         where: { id: chatId },
       });
 
@@ -96,7 +96,7 @@ export class MessageController {
         return;
       }
 
-      const message = await this.prisma.messages.findUnique({
+      const message = await this.prisma.message.findUnique({
         where: { id: messageId, chatId },
       });
 
@@ -146,7 +146,7 @@ export class MessageController {
     const { chatId } = req.params;
 
     try {
-      await this.prisma.messages.create({
+      await this.prisma.message.create({
         data: {
           content: data.content,
           chatId,
@@ -192,7 +192,7 @@ export class MessageController {
     };
 
     try {
-      const message = await this.prisma.messages.findFirst({
+      const message = await this.prisma.message.findFirst({
         where: filter,
       });
 
@@ -205,7 +205,7 @@ export class MessageController {
         return;
       }
 
-      await this.prisma.messages.update({ where: filter, data });
+      await this.prisma.message.update({ where: filter, data });
 
       res.status(200).json({
         statusCode: 200,
@@ -236,7 +236,7 @@ export class MessageController {
     };
 
     try {
-      const message = await this.prisma.messages.findFirst({ where: filter });
+      const message = await this.prisma.message.findFirst({ where: filter });
 
       if (!message) {
         res.status(404).json({
@@ -247,7 +247,7 @@ export class MessageController {
         return;
       }
 
-      await this.prisma.messages.delete({ where: filter });
+      await this.prisma.message.delete({ where: filter });
 
       res.status(200).json({
         statusCode: 200,

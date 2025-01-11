@@ -15,7 +15,7 @@ export class AuthController {
 
   private async userExists(email: string) {
     try {
-      const user = await this.prisma.users.findFirst({
+      const user = await this.prisma.user.findFirst({
         where: { email },
       });
 
@@ -40,7 +40,7 @@ export class AuthController {
     }
 
     try {
-      const user = await this.prisma.users.findFirst({
+      const user = await this.prisma.user.findFirst({
         where: { email: data.email },
       });
 
@@ -107,7 +107,7 @@ export class AuthController {
 
       const hassedPassword = await passwordService.hash(data.password);
 
-      const user = await this.prisma.users.create({
+      const user = await this.prisma.user.create({
         data: { ...data, password: hassedPassword },
       });
 

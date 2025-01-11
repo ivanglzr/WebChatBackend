@@ -7,37 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model chats {
+model Chat {
   id       String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   chatName String     @db.VarChar(100)
   ownerId  String?    @db.Uuid
   usersIds String[]   @db.Uuid
-  users    users?     @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  messages messages[]
+  user    User?     @relation(fields: [ownerId], references: [id], onDelete: NoAction)
+  message Message[]
 }
 
-model codes {
+model Code {
   userId String @id @db.Uuid
   code   Int?
-  users  users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model messages {
+model Message {
   id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   chatId    String?   @db.Uuid
   userId    String?   @db.Uuid
   content   String
   createdAt DateTime? @default(now()) @db.Timestamp(6)
-  chats     chats?    @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  users     users?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chat     Chat?    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user     User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model users {
+model User {
   id       String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   email    String     @unique @db.VarChar(100)
   password String     @db.VarChar(255)
   fullname String     @db.VarChar(100)
-  chats    chats[]
-  codes    codes?
-  messages messages[]
+  chat    Chat[]
+  code    Code?
+  message Message[]
 }
