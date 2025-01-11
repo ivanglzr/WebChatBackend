@@ -14,12 +14,16 @@ model Chat {
   usersIds String[]   @db.Uuid
   user    User?     @relation(fields: [ownerId], references: [id], onDelete: NoAction)
   message Message[]
+
+  @@map("chats")
 }
 
 model Code {
   userId String @id @db.Uuid
   code   Int?
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("codes")
 }
 
 model Message {
@@ -30,6 +34,8 @@ model Message {
   createdAt DateTime? @default(now()) @db.Timestamp(6)
   chat     Chat?    @relation(fields: [chatId], references: [id], onDelete: Cascade)
   user     User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
 }
 
 model User {
@@ -40,4 +46,6 @@ model User {
   chat    Chat[]
   code    Code?
   message Message[]
+
+  @@map("users")
 }
