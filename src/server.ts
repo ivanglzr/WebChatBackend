@@ -12,7 +12,7 @@ import userRouter, { USER_ROUTES } from "./user/router";
 
 import authenticateUser from "./auth/middlewares/authenticate-user";
 
-import { handleSocket } from "./io";
+import { socketServer } from "./io";
 
 const app = express();
 const server = createServer(app);
@@ -22,6 +22,8 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+
+socketServer.init(io);
 
 app.disable("x-powered-by");
 
@@ -51,7 +53,5 @@ app.all("*", (req, res) => {
     message: "Page not found",
   });
 });
-
-handleSocket(io);
 
 export default server;

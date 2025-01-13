@@ -3,46 +3,62 @@ import prisma from "./prisma";
 import { tokenService } from "./auth/services";
 
 import type { Server } from "socket.io";
-import { UUID } from "crypto";
+import type { UUID } from "crypto";
 
 import { EVENTS } from "./config";
 
-export function handleSocket(io: Server) {
-  io.use(async (socket, next) => {
-    if (!socket.handshake.auth.token) {
-      socket.disconnect();
+class SocketServer {
+  private io!: Server;
 
-      return;
-    }
+  init(server: Server) {
+    this.io = server;
 
-    const payload = await tokenService.verify(socket.handshake.auth.token);
+    this.io.use(async (socket, next) => {
+      if (!socket.handshake.auth.token) {
+        socket.disconnect();
 
-    if (!payload || !payload.id) {
-      socket.disconnect();
+        next(new Error("Connection not authorized"));
 
-      return;
-    }
+        return;
+      }
 
-    socket.handshake.auth.id = payload.id;
+      const payload = await tokenService.verify(socket.handshake.auth.token);
 
-    next();
-  });
+      if (!payload || !payload.id) {
+        socket.disconnect();
 
-  io.on("connection", async (socket) => {
-    const id = socket.handshake.auth.id as UUID;
+        next(new Error("Connection not authorized"));
 
-    const chats = await prisma.chat.findMany({
-      where: { usersIds: { has: id } },
+        return;
+      }
+
+      socket.handshake.auth.id = payload.id;
+
+      next();
     });
 
-    const rooms = chats.map(({ id: chatId }) => EVENTS.CHAT_ROOM(chatId));
+    this.io.on("connection", async (socket) => {
+      const id = socket.handshake.auth.id as UUID;
 
-    rooms.push(EVENTS.USER_ROOM(id));
+      const chats = await prisma.chat.findMany({
+        where: { usersIds: { has: id } },
+      });
 
-    socket.join(rooms);
+      const rooms = chats.map(({ id: chatId }) => EVENTS.CHAT_ROOM(chatId));
 
-    socket.on(EVENTS.CHAT_DELETED, (chatId) => {
-      socket.leave(EVENTS.CHAT_ROOM(chatId));
+      rooms.push(EVENTS.USER_ROOM(id));
+
+      socket.join(rooms);
+
+      socket.on(EVENTS.CHAT_DELETED, (chatId) => {
+        socket.leave(EVENTS.CHAT_ROOM(chatId));
+      });
     });
-  });
+  }
+
+  getIo() {
+    return this.io;
+  }
 }
+
+export const socketServer = new SocketServer();
