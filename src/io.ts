@@ -41,7 +41,7 @@ class SocketServer {
       const id = socket.handshake.auth.id as UUID;
 
       const chats = await prisma.chat.findMany({
-        where: { usersIds: { has: id } },
+        where: { memberIds: { has: id } },
       });
 
       const rooms = chats.map(({ id: chatId }) => EVENTS.CHAT_ROOM(chatId));
