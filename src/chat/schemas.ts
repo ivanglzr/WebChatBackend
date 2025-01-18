@@ -8,7 +8,7 @@ const chatNameSchema = z
   .min(1, "Chat name is required")
   .max(100, "Chat name can't have more than a 100 characters");
 
-const usersIdsSchema = z
+const memberIdsSchema = z
   .array(
     z
       .string({
@@ -24,5 +24,5 @@ const usersIdsSchema = z
 
 export const chatSchema = z.object({
   chatName: chatNameSchema,
-  usersIds: usersIdsSchema,
+  memberIds: memberIdsSchema,
 });
