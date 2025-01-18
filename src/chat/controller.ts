@@ -9,12 +9,22 @@ import type { Request, Response } from "express";
 export class ChatController {
   constructor(private prisma: PrismaClient) {}
 
+  private async getChatMembers(memberIds: string[]) {
+    const members = await this.prisma.user.findMany({
+      where: { id: { in: memberIds } },
+      select: { email: true, fullname: true },
+    });
+
+    return members;
+  }
+
   public getUserChats = async (req: Request, res: Response) => {
     const { id } = req.session;
 
     try {
       const chats = await this.prisma.chat.findMany({
         where: { ownerId: id },
+        include: { owner: { select: { fullname: true, email: true } } },
       });
 
       const message =
@@ -51,6 +61,9 @@ export class ChatController {
           ownerId: id,
           id: chatId,
         },
+        include: {
+          owner: { select: { email: true, fullname: true } },
+        },
       });
 
       if (!chat) {
@@ -62,10 +75,12 @@ export class ChatController {
         return;
       }
 
+      const members = await this.getChatMembers(chat.memberIds);
+
       res.status(200).json({
         statusCode: 200,
         message: "Chat fetched successfully",
-        data: chat,
+        data: { ...chat, members },
       });
 
       return;
