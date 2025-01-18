@@ -26,7 +26,7 @@ export class MessageController {
         return;
       }
 
-      if (!chat.usersIds.includes(id)) {
+      if (!chat.memberIds.includes(id)) {
         res.status(404).json({
           statusCode: 404,
           message: "Chat not found",
@@ -87,7 +87,7 @@ export class MessageController {
         return;
       }
 
-      if (!chat.usersIds.includes(id)) {
+      if (!chat.memberIds.includes(id)) {
         res.status(404).json({
           statusCode: 404,
           message: "Chat not found",
@@ -150,7 +150,7 @@ export class MessageController {
         data: {
           content: data.content,
           chatId,
-          userId: id,
+          ownerId: id,
         },
       });
 
