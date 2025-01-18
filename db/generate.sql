@@ -26,7 +26,7 @@ CREATE TABLE chats (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   chatName VARCHAR(100) NOT NULL,
   ownerId UUID REFERENCES users(id),
-  usersIds UUID[]
+  memberIds UUID[]
 )
 
 CREATE TABLE messages (
@@ -55,7 +55,7 @@ CREATE OR REPLACE FUNCTION remove_user_from_chat()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE chats
-  SET usersIds = array_remove(userIds, OLD.id)
+  SET memberIds = array_remove(userIds, OLD.id)
   WHERE OLD.id = ANY(userIds);
   RETURN NULL;
 END;

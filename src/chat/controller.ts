@@ -110,7 +110,7 @@ export class ChatController {
 
     const { id } = req.session;
 
-    if (!data.usersIds.includes(id)) data.usersIds.push(id);
+    if (!data.memberIds.includes(id)) data.memberIds.push(id);
 
     try {
       await this.prisma.chat.create({
