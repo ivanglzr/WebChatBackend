@@ -24,7 +24,10 @@ export class ChatController {
     try {
       const chats = await this.prisma.chat.findMany({
         where: { ownerId: id },
-        include: { owner: { select: { fullname: true, email: true } } },
+        include: {
+          owner: { select: { fullname: true, email: true } },
+          messages: true,
+        },
       });
 
       const message =
@@ -32,10 +35,18 @@ export class ChatController {
           ? "No chats found"
           : `Chat${chats.length > 1 && "s"} fetched successfully`;
 
+      const chatsWithMessages = chats.map((chat) => ({
+        ...chat,
+        messages: chat.messages.map((message) => ({
+          ...message,
+          sent: message.ownerId === id,
+        })),
+      }));
+
       res.status(200).json({
         statusCode: 200,
         message,
-        data: chats,
+        data: chatsWithMessages,
       });
 
       return;
@@ -63,6 +74,7 @@ export class ChatController {
         },
         include: {
           owner: { select: { email: true, fullname: true } },
+          messages: true,
         },
       });
 
@@ -77,10 +89,19 @@ export class ChatController {
 
       const members = await this.getChatMembers(chat.memberIds);
 
+      const chatWithMessages = {
+        ...chat,
+        messages: chat.messages.map((message) => ({
+          ...message,
+          sent: message.ownerId === id,
+        })),
+        members,
+      };
+
       res.status(200).json({
         statusCode: 200,
         message: "Chat fetched successfully",
-        data: { ...chat, members },
+        data: chatWithMessages,
       });
 
       return;
