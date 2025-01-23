@@ -4,6 +4,8 @@ import { PrismaClient } from "@prisma/client";
 import { messageValidationService } from "./services/validation";
 
 import type { Request, Response } from "express";
+import { socketServer } from "@/io";
+import { EVENTS } from "@/config";
 
 export class MessageController {
   constructor(private prisma: PrismaClient) {}
@@ -146,13 +148,15 @@ export class MessageController {
     const { chatId } = req.params;
 
     try {
-      await this.prisma.message.create({
+      const message = await this.prisma.message.create({
         data: {
           content: data.content,
           chatId,
           ownerId: id,
         },
       });
+
+      socketServer.getIo().to(EVENTS.CHAT_ROOM(chatId)).emit(EVENTS.MESSAGE_CREATED, message)
 
       res.status(200).json({
         statusCode: 200,
