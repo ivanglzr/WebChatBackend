@@ -23,7 +23,7 @@ export class ChatController {
 
     try {
       const chats = await this.prisma.chat.findMany({
-        where: { ownerId: id },
+        where: { memberIds: { has: id } },
         include: {
           owner: { select: { fullname: true, email: true } },
           messages: true,
