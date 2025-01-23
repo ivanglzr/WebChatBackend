@@ -35,12 +35,17 @@ export class ChatController {
           ? "No chats found"
           : `Chat${chats.length > 1 && "s"} fetched successfully`;
 
-      const chatsWithMessages = chats.map((chat) => ({
+      const members = await Promise.all(
+        chats.map((chat) => this.getChatMembers(chat.memberIds))
+      );
+
+      const chatsWithMessages = chats.map((chat, index) => ({
         ...chat,
         messages: chat.messages.map((message) => ({
           ...message,
           sent: message.ownerId === id,
         })),
+        members: members[index],
       }));
 
       res.status(200).json({
