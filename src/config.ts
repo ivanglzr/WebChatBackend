@@ -3,4 +3,5 @@ export const EVENTS = {
   USER_ROOM: (userId: string) => `User ${userId}`,
   CHAT_CREATED: "Chat created",
   CHAT_DELETED: "Chat deleted",
+  MESSAGE_CREATED: "Message created",
 };
