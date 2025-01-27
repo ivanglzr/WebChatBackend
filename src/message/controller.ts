@@ -163,11 +163,6 @@ export class MessageController {
         .to(EVENTS.CHAT_ROOM(chatId))
         .emit(EVENTS.MESSAGE_CREATED, message);
 
-      socketServer
-        .getIo()
-        .to(EVENTS.CHAT_ROOM(chatId))
-        .emit(EVENTS.MESSAGE_CREATED, message);
-
       res.status(200).json({
         statusCode: 200,
         message: "Message created successfully",
