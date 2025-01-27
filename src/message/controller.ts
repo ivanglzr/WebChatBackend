@@ -1,11 +1,13 @@
 import prisma from "@/prisma";
 import { PrismaClient } from "@prisma/client";
 
+import { socketServer } from "@/io";
+
 import { messageValidationService } from "./services/validation";
 
-import type { Request, Response } from "express";
-import { socketServer } from "@/io";
 import { EVENTS } from "@/config";
+
+import type { Request, Response } from "express";
 
 export class MessageController {
   constructor(private prisma: PrismaClient) {}
@@ -156,7 +158,15 @@ export class MessageController {
         },
       });
 
-      socketServer.getIo().to(EVENTS.CHAT_ROOM(chatId)).emit(EVENTS.MESSAGE_CREATED, message)
+      socketServer
+        .getIo()
+        .to(EVENTS.CHAT_ROOM(chatId))
+        .emit(EVENTS.MESSAGE_CREATED, message);
+
+      socketServer
+        .getIo()
+        .to(EVENTS.CHAT_ROOM(chatId))
+        .emit(EVENTS.MESSAGE_CREATED, message);
 
       res.status(200).json({
         statusCode: 200,
