@@ -9,4 +9,5 @@ const contentSchema = z
 
 export const messageSchema = z.object({
   content: contentSchema,
+  socketId: z.string(),
 });
