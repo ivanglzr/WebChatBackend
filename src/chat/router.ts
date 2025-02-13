@@ -19,6 +19,12 @@ chatRouter.post("/", chatController.createChat);
 
 chatRouter.put("/:chatId", validateId("chatId"), chatController.editChat);
 
+chatRouter.patch(
+  "/:chatId/member",
+  validateId("chatId"),
+  chatController.patchMembers
+);
+
 chatRouter.delete("/:chatId", validateId("chatId"), chatController.deleteChat);
 
 chatRouter.use("/:chatId/message", validateId("chatId"), messageRouter);
