@@ -65,7 +65,13 @@ export class AuthController {
 
       res.cookie(authCookieName, accessToken, cookieOptions);
 
-      res.status(200).json({ statusCode: 200, message: "Log in successful" });
+      res
+        .status(200)
+        .json({
+          statusCode: 200,
+          message: "Log in successful",
+          userId: user.id,
+        });
 
       return;
     } catch (error) {
@@ -115,9 +121,11 @@ export class AuthController {
 
       res.cookie(authCookieName, accessToken, cookieOptions);
 
-      res
-        .status(201)
-        .json({ statusCode: 201, message: "User created successfully" });
+      res.status(201).json({
+        statusCode: 201,
+        message: "User created successfully",
+        userId: user.id,
+      });
 
       return;
     } catch (error) {

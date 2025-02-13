@@ -161,7 +161,7 @@ export class MessageController {
       socketServer
         .getIo()
         .to(EVENTS.CHAT_ROOM(chatId))
-        .emit(EVENTS.MESSAGE_CREATED, message, data.socketId);
+        .emit(EVENTS.MESSAGE_CREATED, message);
 
       res.status(200).json({
         statusCode: 200,
