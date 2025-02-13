@@ -41,10 +41,16 @@ export class ChatController {
 
       const chatsWithMessages = chats.map((chat, index) => ({
         ...chat,
-        messages: chat.messages.map((message) => ({
-          ...message,
-          sent: message.ownerId === id,
-        })),
+        messages: chat.messages
+          .sort(
+            (a, b) =>
+              new Date(a?.createdAt ?? 0).getTime() -
+              new Date(b?.createdAt ?? 0).getTime()
+          )
+          .map((message) => ({
+            ...message,
+            sent: message.ownerId === id,
+          })),
         members: members[index],
       }));
 
@@ -258,6 +264,63 @@ export class ChatController {
       res.status(500).json({
         statusCode: 500,
         message: "An error ocurred while deleting the chat",
+      });
+
+      return;
+    }
+  };
+
+  public patchMembers = async (req: Request, res: Response) => {
+    const { chatId } = req.params;
+    const { id } = req.session;
+
+    const { data, error } = chatValidationService.validateMemberIds(req.body);
+
+    if (error) {
+      res.status(422).json({
+        statusCode: 422,
+        message: "Member ids are not valid",
+      });
+
+      return;
+    }
+
+    const query = {
+      id: chatId,
+      ownerId: id,
+    };
+
+    try {
+      const chat = await this.prisma.chat.findFirst({
+        where: query,
+      });
+
+      if (!chat) {
+        res.status(404).json({
+          statusCode: 404,
+          message: "Chat not found",
+        });
+
+        return;
+      }
+
+      await this.prisma.chat.update({
+        where: query,
+        data: { memberIds: { push: data.memberIds } },
+      });
+
+      res.status(200).json({
+        statusCode: 200,
+        message: "Members added",
+      });
+
+      return;
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        statusCode: 500,
+        message: "An error ocurred while adding the members",
       });
 
       return;
